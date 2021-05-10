@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="75f7b6b5-6664-4453-825a-f402e8e3c791" activeEnvironment="Default" name="MavenJenkinsDemo" soapui-version="5.6.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:testSuite id="2af6c091-f5b7-4816-9b9b-53062391318c" name="Database testing"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="38dac9c0-0116-49c9-a564-5762e1c8a4f1" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Database Testing with JDBC" searchProperties="true"><con:settings/><con:testStep type="jdbc" name="JDBC Request" id="d11d0092-2991-4f86-a3fd-d1cfb73a2719"><con:settings/><con:config xsi:type="con:JdbcRequestTestStep" convertColumnNamesToUpperCase="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:driver>com.mysql.jdbc.Driver</con:driver><con:connectionString>jdbc:mysql://localhost:3306/API?user=root&amp;password=root</con:connectionString><con:query>select * from login</con:query><con:properties/></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script" id="9c8ff78c-d60e-4465-8609-5fa0602214fb" disabled="true"><con:settings/><con:config><script>import com.eviware.soapui.support.XmlHolder	
+
+def jdbcrresponse=context.testCase.testSteps['JDBC Request'].getPropertyValue("responseAsXml");
+
+//log.info jdbcrresponse;
+
+def holder=new XmlHolder(jdbcrresponse);
+
+	def nodecount=holder.getNodeValue("count(//ResultSet/Row)");
+
+	log.info nodecount;
+	def count=nodecount.toInteger();
+for (def i=1;	i	&lt;=count;i++)
+{
+def username=holder.getNodeValue("//ResultSet/Row["+i+"]/LOGIN.NAME");
+def password=holder.getNodeValue("//ResultSet/Row["+i+"]/LOGIN.PASSWORD");
+
+def tc = testRunner.testCase.testSuite.project.workspace.getProjectByName("soap Testing").testSuites["shopping service Funtional Testing"]
+.testCases['property expansion']
+
+tc.testSteps['Username and password Properties'].setPropertyValue("username",username)
+tc.testSteps['Username and password Properties'].setPropertyValue("password",password)
+
+//tc.run(null,false);
+def runner=tc.run(null,false);
+
+log.info "$runner.status"
+}</script></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
